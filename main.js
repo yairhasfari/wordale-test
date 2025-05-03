@@ -336,7 +336,7 @@ function openInstructions() {
 }
 function saveUserData() {
     //update statistics:
-    //updateStatistics();
+    updateStatistics();
     //saves the date the user is currently on
     localStorage.setItem('userDate', today);
     //saves the answers arrays of today
@@ -420,22 +420,24 @@ function countDownTimer() {
     }, 1000);
 }
 function updateStatistics() {
-    // //get older statistics:
-    // if (endOfGameToday === true) {
-    //     let storagePlayed = localStorage.getItem('played')
-    //     if (storagePlayed !== null) {
-    //         newPlayed = JSON.parse(storagePlayed)+1;
-    //     }
-    //     else newPlayed=1;
-    //     localStorage.setItem('played',newPlayed);
-    // }
-    // /*
-    // localStorage.setItem('guessDistribution',guessDistribution);
-    // localStorage.setItem('played',played);
-    // localStorage.setItem('wins',wins);
-    // localStorage.setItem('streak',streak);
-    // localStorage.setItem('maxStreak',maxStreak);
-    // */
+    //get older statistics:
+    if (endOfGameToday === true) {
+        let storagePlayed = localStorage.getItem('played')
+        if (storagePlayed !== null) {
+            newPlayed = JSON.parse(storagePlayed)+1;
+            console.log('no');
+        }
+        else newPlayed=1;
+        localStorage.setItem('played',newPlayed);
+        console.log('yes');
+    }
+    /*
+    localStorage.setItem('guessDistribution',guessDistribution);
+    localStorage.setItem('played',played);
+    localStorage.setItem('wins',wins);
+    localStorage.setItem('streak',streak);
+    localStorage.setItem('maxStreak',maxStreak);
+    */
 
 }
 loadUserData();
