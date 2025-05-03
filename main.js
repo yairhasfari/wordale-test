@@ -189,8 +189,8 @@ function handleGameEnd(result) {
     const alreadySentKey = `resultSent-${gameDateKey}`;
 
     if (localStorage.getItem(alreadySentKey)) {
-        //console.log("Result already sent for this game.");
-        //return;
+        console.log("Result already sent for this game.");
+        return;
     }
 
     sendResultToFirebase(result);  // זו הפונקציה שאתה צריך לכתוב/השתמש בה
