@@ -42,6 +42,7 @@
       
         // זמינות גלובלית לפונקציות דרך window (כדי שתוכל לקרוא להן מתוך main.js)
         window.sendResultToFirebase = function (guessCount) {
+            console.log("inFirebase"+guessCount)
           const dateStr = new Date().toISOString().split('T')[0];
           push(ref(db, 'results/' + dateStr), {
             guesses: guessCount,
@@ -49,7 +50,6 @@
           });
         //   const allResults = Object.values(snapshot.val());
         //   allResults.push({ guesses: guessCount });
-          console.log(guessCount);
         };
       
         window.fetchPercentile = function (guesses, callback) {
@@ -70,8 +70,7 @@
 
         window.openStats = function () {
     const statsModal = document.getElementById("statsModal");
-    statsModal.classList.remove("hidden");
-    statsModal.classList.add("visible");
+
     statsModal.style.visibility = "visible";
 
     // נניח שהניחוש האחרון שמור במשתנה גלובלי או session
@@ -131,7 +130,7 @@
         <style>
 
             #topBar {
-                margin: 5% auto;
+                margin: 4% auto 1%;
                 display: flex;
                 justify-content: space-evenly;
                 width: clamp(5vw,100vw,320px);
@@ -180,7 +179,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TMD96M6"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <h3 id="demo"></h3>
+    <!-- <h3 id="demo"></h3> -->
 
     <div id="notify">
     </div>
@@ -229,9 +228,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 6%;
+  padding: 0px clamp(2%, 4%, 10px);
   font-family: 'Secular One';
-  font-size: clamp(10px, 3vw, 14px);
+  font-size: clamp(3px, 3vw, 14px);
   width: 95vw;
   max-width: 500px;
   margin: 8px auto;
@@ -594,9 +593,6 @@
   gap: 6px;
   margin-top: 10px;
 }
-.hidden { opacity: 0; transition: opacity 0.3s ease; }
-.visible { opacity: 1; }
-
 .statsRow {
   display: flex;
   align-items: center;
@@ -734,7 +730,7 @@
     <div id="statsModal" style="visibility: hidden;">
         <div id="statsContent">
           <button onclick="closeStats()" id="closeStats">✖</button>
-          <h3>:התפלגות ניחושים להיום</h3>
+          <h3 id="statsTitle">:התפלגות ניחושים להיום</h3>
           <div id="statsTable"></div>
         </div>
       </div>

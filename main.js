@@ -4,7 +4,8 @@
 ////////* Variables: *///////
 
 // did user win todays game:
-
+//localStorage.clear();
+//console.log(localStorage.getItem(alreadySentKey));
 let win = false;
 // did user finish todays game (win or lose):
 let endOfGameToday = false;
@@ -95,6 +96,7 @@ function sendWord() {
                 if (wordCount < 7) {
                     wordCount++;
                 }
+                console.log("sendword");
                 compareWords();//compares words and does the rest fills tiles accordingly
                 rowCount++;
                 answersLetters.push(currentWord);//keeps the word in answers array (not the colors)
@@ -187,12 +189,14 @@ function getCurrentDateKey() {
 function handleGameEnd(result) {
     const gameDateKey = getCurrentDateKey();
     const alreadySentKey = `resultSent-${gameDateKey}`;
-
+console.log(alreadySentKey);
+console.log(localStorage.getItem(alreadySentKey));
+console.log("afterHandle"+ result);
     if (localStorage.getItem(alreadySentKey)) {
+        console.log("result"+result);
         console.log("Result already sent for this game.");
         return;
     }
-
     sendResultToFirebase(result);  // זו הפונקציה שאתה צריך לכתוב/השתמש בה
 
     localStorage.setItem(alreadySentKey, "true");
@@ -268,14 +272,16 @@ function compareWords() {
 
     answer = answer.reverse();
     answersColors.push(answer);
-
+console.log(greenIndices);
 
     // color text white
     document.getElementById(`row${wordCount}`).style.color = "white";
     //if sentWord is correct display final message and update win:
-    if (greenIndices.length === 5 || wordCount === 6) {
+    // if (greenIndices.length === 5 || wordCount === 6) {
+    if (greenIndices.length === 5) {
         win = true;
         window.finalGuessCount = wordCount;
+        console.log("win");
         handleGameEnd(wordCount);
         //sendResultToFirebase(wordCount);
         showDistributionStats(wordCount);
@@ -288,19 +294,24 @@ function compareWords() {
         // });
         openNotificationLong(winMessage, true);
         openShareNotificationLong();
-
-
     }
     //if ended and lost:
     if (wordCount === 6 && greenIndices.length != 5) {
+        console.log(wordCount);
+        console.log("lose");
+        wordCount=wordCount+1;
+        console.log(wordCount);
         window.finalGuessCount = wordCount;
         win=false;
+        console.log("beforeHandle" + wordCount);
         handleGameEnd(wordCount);
         //sendResultToFirebase(wordCount);
         showDistributionStats(999);
         endOfGameToday = true;
         let message = `המילה היא ${pickedWord} `;
         openNotificationLong(message, false);
+        openShareNotificationLong();
+
         // fetchPercentile(wordCount, function(percentile, total) {
         //     openNotificationLong(`הצלחת ב-${wordCount} ניחושים! אתה באחוזון ה-${percentile} מבין ${total} שחקנים.`, true);
         // });
@@ -418,7 +429,6 @@ function fetchPercentile(guesses, callback) {
 //         guesses: guessCount,
 //         timestamp: Date.now()
 //     });
-//     console.log(guessCount);
 //     const allResults = Object.values(snapshot.val());
   
 //     //   // הוספת המשתמש לתוך ההתפלגות אם טרם נרשם
@@ -438,7 +448,6 @@ function renderStats(stats, userGuess) {
 
     const row = document.createElement("div");
     row.className = "statsRow" + ((userGuess == key || (key === 'fail' && userGuess === 7)) ? " highlight" : "");
-console.log(row.className);
     const label = document.createElement("div");
     label.className = "statsLabel";
     label.innerText = key === 'fail' ? "לא הצליחו" : `ניחוש ${key}`;
@@ -462,6 +471,10 @@ console.log(row.className);
 
     table.appendChild(row);
   });
+  const statsTitle = document.getElementById("statsTitle");
+const today = new Date();
+const formattedDate = today.toLocaleDateString('he-IL'); // למשל: 03/05/2025
+statsTitle.innerText = `התפלגות ניחושים להיום - ${formattedDate}`;
 }
 function pickMessage() {
     let messageArray = [];
@@ -560,9 +573,6 @@ function loadUserData() {
     let savedDateCompare = savedDate.setHours(0, 0, 0, 0)//likewise
     //only if day has changed:
     if (todayNoHours === savedDateCompare) {
-        // let endHistory = localStorage.getItem(end);
-        // console.log(endHistory);
-        // console.log(endOfGameToday);
         answersLetters = localStorage.getItem('answersLetters').split(",");
         for (k = 0; k < answersLetters.length; k++) {
             for (m = 0; m < answersLetters[k].length; m++) {
@@ -676,7 +686,7 @@ const suffixLetterToMiddleLetter = {
     'ך':'כ',
 }
 window.addEventListener('keydown', function (e) {
-    console.log(e.key);
+
     if (e.key === 'Enter') {
         sendWord();
     }
